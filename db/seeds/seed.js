@@ -1,7 +1,7 @@
 const connection = require('../connection');
 const data = require('../data/development-data/index');
 const pg = require('pg');
-const { formatTopicsData, formatUsersData } = require('../utils/data-manipulation');
+const { formatTopicsData, formatUsersData, formatArticlesData, formatCommentsData } = require('../utils/data-manipulation');
 const format = require('pg-format');
 
 const seed = (data) => {
@@ -68,8 +68,7 @@ const seed = (data) => {
         formattedTopicsData);
       return connection.query(topicsQueryString);
     })
-    .then((result) => {
-      console.log(result.rows);
+    .then(() => {
       const formattedUsersData = formatUsersData(userData);
       const usersQueryString = format(
         `INSERT INTO users
@@ -84,7 +83,17 @@ const seed = (data) => {
       (title, topic, author, body, created_at, votes)
       VALUES %L RETURNING*`, formattedArticlesData);
       return connection.query(articlesQueryString);
-    }).then(() => {
+    })
+    .then(() => {
+      const formattedCommentsData = formatCommentsData(commentData);
+      const commentsQueryString = format(`
+      INSERT INTO comments
+      (body, votes, author, article_id, created_at)
+      VALUES %L RETURNING*`, formattedCommentsData);
+      return connection.query(commentsQueryString);
+    })
+    .then(() => {
+      console.log('seeding completed');
   })
    
   
