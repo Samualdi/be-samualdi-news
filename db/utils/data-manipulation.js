@@ -1,1 +1,10 @@
-// extract any functions you are using to manipulate your data, into this file
+
+formatTopicsData = (topicsData) => {
+    if (topicsData.length === 0) return [];
+    const formattedTopics = topicsData.map(topic => {
+        return [topic.description, topic.slug];
+    })
+    return formattedTopics;
+}
+
+module.exports = formatTopicsData;
