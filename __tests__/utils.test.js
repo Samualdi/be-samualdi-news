@@ -347,5 +347,147 @@ describe('formatArticlesData', () => {
     });
 });
 
+describe('formatCommentsData', () => {
+    test('returns empty array when passed an empty array', () => {
+        const input = [];
+        const actual = formatCommentsData(input);
+        const expected = [];
+
+        expect(actual).toEqual(expected);
+        expect(actual).not.toBe(expected);
+        
+    });
+    
+    test("returns a new array with a single nested array of comment data when passed a single comment object in an array", () => {
+      const input = [
+        {
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 16,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: new Date(1586179020000),
+        },
+      ];
+      const actual = formatCommentsData(input);
+      const expected = [
+        [
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          16,
+          "butter_bridge",
+          9,
+          new Date(1586179020000),
+        ],
+      ];
+
+      expect(actual).toEqual(expected);
+      expect(actual).not.toBe(expected);
+    });
+
+    test("returns a new array with a multiple nested array of comment data when passed multiple comment objects in an array", () => {
+      const input = [
+        {
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 16,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: new Date(1586179020000),
+        },
+        {
+          body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          votes: 14,
+          author: "butter_bridge",
+          article_id: 1,
+          created_at: new Date(1604113380000),
+        },
+        {
+          body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+          votes: 100,
+          author: "icellusedkars",
+          article_id: 1,
+          created_at: new Date(1583025180000),
+        },
+      ];
+      const actual = formatCommentsData(input);
+      const expected = [
+        [
+          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          16,
+          "butter_bridge",
+          9,
+          new Date(1586179020000),
+        ],
+        [
+          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          14,
+          "butter_bridge",
+            1,
+            new Date(1604113380000),
+        ],
+        [
+          "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+          100,
+          "icellusedkars",
+          1,
+          new Date(1583025180000),
+        ]
+      ];
+
+      expect(actual).toEqual(expected);
+      expect(actual).not.toBe(expected);
+    });
+
+    test('does not mutate input', () => {
+        const input = [
+          {
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 16,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: new Date(1586179020000),
+          },
+          {
+            body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+            votes: 14,
+            author: "butter_bridge",
+            article_id: 1,
+            created_at: new Date(1604113380000),
+          },
+          {
+            body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+            votes: 100,
+            author: "icellusedkars",
+            article_id: 1,
+            created_at: new Date(1583025180000),
+          },
+        ];
+        formatCommentsData(input);
+        
+        expect(input).toEqual([
+          {
+            body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+            votes: 16,
+            author: "butter_bridge",
+            article_id: 9,
+            created_at: new Date(1586179020000),
+          },
+          {
+            body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+            votes: 14,
+            author: "butter_bridge",
+            article_id: 1,
+            created_at: new Date(1604113380000),
+          },
+          {
+            body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+            votes: 100,
+            author: "icellusedkars",
+            article_id: 1,
+            created_at: new Date(1583025180000),
+          },
+        ]);
+
+    });
+});
+
 
 

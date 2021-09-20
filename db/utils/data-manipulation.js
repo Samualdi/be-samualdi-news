@@ -14,7 +14,6 @@ formatUsersData = (usersData) => {
     })
 
     return formattedUsers;
-
 }
 
 formatArticlesData = (articlesData) => {
@@ -23,6 +22,15 @@ formatArticlesData = (articlesData) => {
         return [article.title, article.topic, article.author, article.body, article.created_at, article.votes];
     })
     return formattedArticles;
+}
+
+formatCommentsData = (commentsData) => {
+    if (commentsData.length === 0) return [];
+    const formattedComments = commentsData.map(comment => {
+        return[comment.body, comment.votes, comment.author, comment.article_id, comment.created_at]
+    })
+
+    return formattedComments;
 }
 
 
