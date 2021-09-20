@@ -7,4 +7,14 @@ formatTopicsData = (topicsData) => {
     return formattedTopics;
 }
 
-module.exports = formatTopicsData;
+formatUsersData = (usersData) => {
+    if (usersData.length === 0) return [];
+    const formattedUsers = usersData.map(user => {
+        return [user.username, user.name, user.avatar_url];
+    })
+
+    return formattedUsers;
+
+}
+
+module.exports = { formatTopicsData, formatUsersData };
