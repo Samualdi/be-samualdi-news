@@ -1,6 +1,8 @@
 const connection = require('../connection');
 const data = require('../data/development-data/index');
 const pg = require('pg');
+const { formatTopicsData, formatUsersData } = require('../utils/data-manipulation');
+const format = require('pg-format');
 
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
@@ -56,15 +58,28 @@ const seed = (data) => {
       body TEXT NOT NULL
     );`);
     })
-    .then(() => {
-      return connection.query(`INSERT INTO topics
-      (description, slug)
-      VALUES %L RETURNING*;`, formattedTopics);
     
+    .then(() => {
+      const formattedTopicsData = formatTopicsData(topicData);
+      const topicsQueryString = format(
+        `INSERT INTO topics
+      (description, slug)
+      VALUES %L RETURNING*;`,
+        formattedTopicsData);
+      return connection.query(topicsQueryString);
+    })
+    .then(() => {
+      const formattedUsersData = formatUsersData(userData);
+      const usersQueryString = format(
+        `INSERT INTO users
+        (username, name, avatar_url)
+        VALUES %L RETURNING*;`, formattedUsersData);
+      return connection.query(usersQueryString);
+    })
+    .then((userinsertionresult) => {
+      console.log(userinsertionresult);
   })
-  
-  
-  
+   
   
 }
 
