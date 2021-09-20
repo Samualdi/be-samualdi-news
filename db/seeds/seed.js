@@ -68,7 +68,8 @@ const seed = (data) => {
         formattedTopicsData);
       return connection.query(topicsQueryString);
     })
-    .then(() => {
+    .then((result) => {
+      console.log(result.rows);
       const formattedUsersData = formatUsersData(userData);
       const usersQueryString = format(
         `INSERT INTO users
@@ -76,8 +77,14 @@ const seed = (data) => {
         VALUES %L RETURNING*;`, formattedUsersData);
       return connection.query(usersQueryString);
     })
-    .then((userinsertionresult) => {
-      console.log(userinsertionresult);
+    .then(() => {
+      const formattedArticlesData = formatArticlesData(articleData);
+      const articlesQueryString = format(
+        `INSERT INTO articles
+      (title, topic, author, body, created_at, votes)
+      VALUES %L RETURNING*`, formattedArticlesData);
+      return connection.query(articlesQueryString);
+    }).then(() => {
   })
    
   
