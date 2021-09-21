@@ -1,4 +1,4 @@
-const connection = require('../connection');
+const db = require('../connection');
 const data = require('../data/development-data/index');
 const pg = require('pg');
 const { formatTopicsData, formatUsersData, formatArticlesData, formatCommentsData } = require('../utils/data-manipulation');
@@ -7,28 +7,28 @@ const format = require('pg-format');
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
 
-  return connection
-    .query("DROP TABLE IF EXISTS topics;")
+  return db
+    .query("DROP TABLE IF EXISTS articles CASCADE;")
     .then(() => {
-      return connection
-        .query("DROP TABLE IF EXISTS articles;")
+      return db
+        .query("DROP TABLE IF EXISTS comments;")
     })
     .then(() => {
-      return connection.query("DROP TABLE IF EXISTS users;")
+      return db.query("DROP TABLE IF EXISTS users;")
     })
     .then(() => {
-      return connection.query("DROP TABLE IF EXISTS comments;")
+      return db.query("DROP TABLE IF EXISTS topics;")
     
     })
     .then(() => {
-      return connection.query(
+      return db.query(
         `CREATE TABLE topics(
       slug TEXT PRIMARY KEY,
       description TEXT NOT NULL
     );`)
     })
     .then(() => {
-      return connection.query(
+      return db.query(
         `CREATE TABLE users(
       username VARCHAR(100) PRIMARY KEY,
       avatar_url TEXT NOT NULL,
@@ -36,7 +36,7 @@ const seed = (data) => {
     );`, );
     })
     .then(() => {
-      return connection.query(
+      return db.query(
         `CREATE TABLE articles(
       article_id SERIAL PRIMARY KEY,
       title VARCHAR(200) NOT NULL,
@@ -48,7 +48,7 @@ const seed = (data) => {
       );
     })
     .then(() => {
-      return connection.query(
+      return db.query(
         `CREATE TABLE comments(
       comment_id SERIAL PRIMARY KEY,
       author VARCHAR(100) REFERENCES users(username),
@@ -66,7 +66,7 @@ const seed = (data) => {
       (description, slug)
       VALUES %L RETURNING*;`,
         formattedTopicsData);
-      return connection.query(topicsQueryString);
+      return db.query(topicsQueryString);
     })
     .then(() => {
       const formattedUsersData = formatUsersData(userData);
@@ -74,7 +74,7 @@ const seed = (data) => {
         `INSERT INTO users
         (username, name, avatar_url)
         VALUES %L RETURNING*;`, formattedUsersData);
-      return connection.query(usersQueryString);
+      return db.query(usersQueryString);
     })
     .then(() => {
       const formattedArticlesData = formatArticlesData(articleData);
@@ -82,7 +82,7 @@ const seed = (data) => {
         `INSERT INTO articles
       (title, topic, author, body, created_at, votes)
       VALUES %L RETURNING*`, formattedArticlesData);
-      return connection.query(articlesQueryString);
+      return db.query(articlesQueryString);
     })
     .then(() => {
       const formattedCommentsData = formatCommentsData(commentData);
@@ -90,7 +90,7 @@ const seed = (data) => {
       INSERT INTO comments
       (body, votes, author, article_id, created_at)
       VALUES %L RETURNING*`, formattedCommentsData);
-      return connection.query(commentsQueryString);
+      return db.query(commentsQueryString);
     })
     .then(() => {
       console.log('seeding completed');
