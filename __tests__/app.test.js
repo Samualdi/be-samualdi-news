@@ -72,6 +72,41 @@ describe('GET/api/articles/article_id', () => {
             .expect(404)
         expect(res.body.msg).toBe('Not found');
     });
+});
+
+describe('PATCH/api/articles/:article_id', () => {
+    test('200: returns the updated article based on the input_id with relevant keys and correct number of votes when passed a positive value of inc_votes', async () => {
+        const res = await request(app)
+            .patch('/api/articles/1')
+            .send({ inc_votes: 10 })
+            .expect(200)
+        console.log(res.body.updatedArticle);
+        expect(res.body.updatedArticle.votes).toBe(110);
+        expect(res.body.updatedArticle.article_id).toBe(1);
+        const keysFromObject = Object.keys(res.body.updatedArticle);
+        expect(keysFromObject).toEqual(['article_id','title', 'body', 'votes', 'topic', 'author', 'created_at']
+        );
+    });
+
+    test('200: returns the updated article based on the input_id with relevant keys and correct number of votes when passed a negative value for inc_votes', async () => {
+        const res = await request(app)
+          .patch("/api/articles/1")
+          .send({ inc_votes: -10 })
+          .expect(200);
+        expect(res.body.updatedArticle.votes).toBe(90);
+        expect(res.body.updatedArticle.article_id).toBe(1);
+        const keysFromObject = Object.keys(res.body.updatedArticle);
+        expect(keysFromObject).toEqual([
+          "article_id",
+          "title",
+          "body",
+          "votes",
+          "topic",
+          "author",
+          "created_at",
+        ]);
+        
+    });
     
 });
     

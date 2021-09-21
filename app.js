@@ -12,7 +12,6 @@ app.use('/api', apiRouter);
 
 app.use(handle400Errors);
 app.use(handleCustomErrors);
-
 app.use(handle500Errors);
 
 module.exports = app;
