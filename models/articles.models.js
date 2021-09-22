@@ -20,8 +20,12 @@ exports.fetchArticle = async (article_id) => {
 }
 
 exports.changeArticleVotes = async (article_id, inc_votes) => {
-  const result = await db.query(`
-  SELECT * FROM articles WHERE article_id =$1`, [article_id]);
-  result.rows[0].votes += inc_votes;
-  return result.rows[0];
-}
+  if (inc_votes === undefined || typeof inc_votes !== 'number') {
+    return Promise.reject({ status: 400, msg: "Bad request" });
+  } else {
+    const result = await db.query(`
+  UPDATE articles SET votes = votes + $1 WHERE article_id =$2 RETURNING*`, [inc_votes, article_id]);
+  
+    return result.rows[0];
+  }
+  }

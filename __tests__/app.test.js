@@ -80,7 +80,6 @@ describe('PATCH/api/articles/:article_id', () => {
             .patch('/api/articles/1')
             .send({ inc_votes: 10 })
             .expect(200)
-        console.log(res.body.updatedArticle);
         expect(res.body.updatedArticle.votes).toBe(110);
         expect(res.body.updatedArticle.article_id).toBe(1);
         const keysFromObject = Object.keys(res.body.updatedArticle);
@@ -105,8 +104,34 @@ describe('PATCH/api/articles/:article_id', () => {
           "author",
           "created_at",
         ]);
-        
+    
     });
+
+    test("400: returns an error when passed an empty object as part of the pathc request", async () => {
+      const res = await request(app)
+        .patch("/api/articles/1")
+        .send({})
+        .expect(400);
+      expect(res.body.msg).toBe("Bad request");
+    });
+
+    test('400: returns error when passed an invlaid value for inc_votes (e.g. a string)', async () => {
+        const res = await request(app)
+          .patch("/api/articles/1")
+          .send({inc_vote: 'notanumber'})
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+
+    test('400: returns an error when passed a valid inc_vote for an article_id that does not exist', async () => {
+        const res = await request(app)
+          .patch("/api/articles/334")
+          .send({ inc_vote: 10 })
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+
+
     
 });
     
