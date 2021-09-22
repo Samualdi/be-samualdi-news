@@ -139,7 +139,18 @@ describe('PATCH/api/articles/:article_id', () => {
         expect(res.body.msg).toBe("Bad request");
     });
 
+});
 
+describe('GET /api/articles/:article_id/comments', () => {
+    test('200: returns an array of comments associated with the given article_id including the appropriate key:value pairs', async () => {
+        const res = await request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+        expect(res.body.articleComments).toHaveLength(13);
+        const expectedKeys = Object.keys(res.body.articleComments[0]);
+        expect(expectedKeys).toEqual([`comment_id`,`votes`,`created_at`, `author`, `body`]);
+        
+    });
     
 });
     

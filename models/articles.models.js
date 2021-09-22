@@ -28,4 +28,10 @@ exports.changeArticleVotes = async (article_id, inc_votes) => {
   
     return result.rows[0];
   }
-  }
+}
+  
+exports.fetchArticleComments = async (article_id) => {
+  const result = await db.query(`
+        SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1`, [article_id]);
+  return result.rows;
+}

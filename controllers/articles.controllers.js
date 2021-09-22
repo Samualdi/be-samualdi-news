@@ -1,4 +1,5 @@
-const { fetchArticle, changeArticleVotes } = require('../models/articles.models');
+const db = require('../db/connection');
+const { fetchArticle, changeArticleVotes, fetchArticleComments } = require('../models/articles.models');
 
 
 exports.getArticle = async (req, res, next) => {
@@ -20,6 +21,17 @@ exports.updateArticleVotes = async (req, res, next) => {
         const updatedArticle = await changeArticleVotes(article_id, inc_votes);
         res.status(200).send({ updatedArticle: updatedArticle });
         
+    } catch (err) {
+        next(err);
+    }
+    
+}
+
+exports.getArticleComments = async (req, res, next) => {
+    try {
+        const { article_id } = req.params;
+        const articleComments = await fetchArticleComments(article_id);
+        res.status(200).send({ articleComments: articleComments });
     } catch (err) {
         next(err);
     }
