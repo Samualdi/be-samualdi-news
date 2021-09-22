@@ -131,6 +131,14 @@ describe('PATCH/api/articles/:article_id', () => {
         expect(res.body.msg).toBe("Bad request");
     });
 
+    test('400: returns an error when passed a valid inc_vote and an invalid article_id', async () => {
+        const res = await request(app)
+          .patch("/api/articles/notanumber")
+          .send({ inc_vote: 10 })
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+
 
     
 });
