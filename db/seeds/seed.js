@@ -1,7 +1,7 @@
 const db = require('../connection');
 const data = require('../data/development-data/index');
 const pg = require('pg');
-const { formatTopicsData, formatUsersData, formatArticlesData, formatCommentsData } = require('../utils/data-manipulation');
+const { formatTopicsData, formatUsersData, formatArticlesData, formatCommentsData, formatData } = require('../utils/data-manipulation');
 const format = require('pg-format');
 
 const seed = (data) => {
@@ -60,7 +60,7 @@ const seed = (data) => {
     })
     
     .then(() => {
-      const formattedTopicsData = formatTopicsData(topicData);
+      const formattedTopicsData = formatData(topicData);
       const topicsQueryString = format(
         `INSERT INTO topics
       (description, slug)
@@ -69,7 +69,7 @@ const seed = (data) => {
       return db.query(topicsQueryString);
     })
     .then(() => {
-      const formattedUsersData = formatUsersData(userData);
+      const formattedUsersData = formatData(userData);
       const usersQueryString = format(
         `INSERT INTO users
         (username, name, avatar_url)
@@ -77,7 +77,7 @@ const seed = (data) => {
       return db.query(usersQueryString);
     })
     .then(() => {
-      const formattedArticlesData = formatArticlesData(articleData);
+      const formattedArticlesData = formatData(articleData);
       const articlesQueryString = format(
         `INSERT INTO articles
       (title, topic, author, body, created_at, votes)
@@ -85,7 +85,7 @@ const seed = (data) => {
       return db.query(articlesQueryString);
     })
     .then(() => {
-      const formattedCommentsData = formatCommentsData(commentData);
+      const formattedCommentsData = formatData(commentData);
       const commentsQueryString = format(`
       INSERT INTO comments
       (body, votes, author, article_id, created_at)
