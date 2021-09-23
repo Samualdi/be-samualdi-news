@@ -26,11 +26,11 @@
     "dotenv": "^10.0.0",
     "env": "^0.0.2",
     "express": "^4.17.1",
-    "jest": "^27.2.0",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4"
   },
   "devDependencies": {
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "jest": "^27.2.0"
   }
 }
