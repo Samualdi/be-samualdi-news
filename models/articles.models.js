@@ -1,4 +1,5 @@
 const db = require("../db/connection")
+const checkExists = require('../db/utils/data-validation');
 
 
 exports.fetchArticle = async (article_id) => {
@@ -33,5 +34,8 @@ exports.changeArticleVotes = async (article_id, inc_votes) => {
 exports.fetchArticleComments = async (article_id) => {
   const result = await db.query(`
         SELECT comment_id, votes, created_at, author, body FROM comments WHERE article_id = $1`, [article_id]);
+  if (result.rows.length === 0) {
+    await checkExists('articles', 'article_id', article_id);
+  }
   return result.rows;
 }

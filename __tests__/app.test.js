@@ -149,7 +149,27 @@ describe('GET /api/articles/:article_id/comments', () => {
         expect(res.body.articleComments).toHaveLength(13);
         const expectedKeys = Object.keys(res.body.articleComments[0]);
         expect(expectedKeys).toEqual([`comment_id`,`votes`,`created_at`, `author`, `body`]);
-        
+    });
+
+    test('200: returns an empty array when passed an article_id that exists but has no comments associated with with it.', async () => {
+        const res = await request(app)
+            .get('/api/articles/3/comments')
+            .expect(200)
+        expect(res.body.articleComments.length).toBe(0);
+    });
+
+    test('400: returns an error when passed an invalid article_id', async () => {
+        const res = await request(app)
+            .get('/api/articles/notanumber/comments')
+            .expect(400)
+        expect(res.body.msg).toBe('Bad request');
+    });
+
+    test('404: returns an error when passed an article_id that does not exist', async () => {
+        const res = await request(app)
+            .get("/api/articles/999/comments")
+            .expect(404)
+        expect(res.body.msg).toBe('Not found');
     });
     
 });
