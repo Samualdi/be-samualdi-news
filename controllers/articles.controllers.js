@@ -1,5 +1,5 @@
 const db = require('../db/connection');
-const { fetchArticle, changeArticleVotes, fetchArticleComments } = require('../models/articles.models');
+const { fetchArticle, changeArticleVotes, fetchArticleComments, fetchArticles } = require('../models/articles.models');
 
 
 exports.getArticle = async (req, res, next) => {
@@ -36,4 +36,15 @@ exports.getArticleComments = async (req, res, next) => {
         next(err);
     }
     
+}
+
+exports.getArticles = async (req, res, next) => {
+    try {
+        const { sort_by, order, topic } = req.query;
+        const articles = await fetchArticles(sort_by, order, topic);
+        res.status(200).send({ articles: articles });
+        
+    } catch (err) {
+        next (err)
+    }
 }

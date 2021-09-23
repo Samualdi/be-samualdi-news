@@ -3,6 +3,7 @@ const testData = require('../db/data/test-data/index.js');
 const seed = require('../db/seeds/seed.js');
 const request = require('supertest');
 const app = require('../app');
+const { forEach } = require('../db/data/test-data/articles.js');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -173,6 +174,61 @@ describe('GET /api/articles/:article_id/comments', () => {
     });
     
 });
+
+describe('GET /api/articles', () => {
+    test("200: returns an array of all articles with correct comment count (sorted by date descending as default) when passed no queries", async () => {
+      const res = await request(app).get("/api/articles").expect(200);
+      expect(res.body.articles.length).toBe(12);
+      expect(res.body.articles[0].comment_count).toBe(0);
+      expect(res.body.articles).toBeSortedBy("created_at", {
+        descending: true,
+      });
+      res.body.articles.forEach((article) => {
+        expect(Object.keys(article)).toEqual([
+          "author",
+          "title",
+          "article_id",
+          "topic",
+          "created_at",
+          "votes",
+          "comment_count",
+        ]);
+      });
+    });
+    
+    test('200: returns an array of articles sorted by a column other than created_at when passed as a query (defaulted to descending)', async () => {
+        const res = await request(app)
+            .get('/api/articles?sort_by=article_id')
+            .expect(200)
+        expect(res.body.articles).toBeSortedBy('article_id', { descending: true });
+    });
+
+    test('200: returns an array of articles ordered by created_by ascending when passed an order query of asc', async () => {
+        const res = await request(app)
+            .get("/api/articles?order=asc")
+            .expect(200)
+        expect(res.body.articles).toBeSortedBy('created_at');
+        
+    });
+
+    test('200: returns an array sorted by a specified column in ascending order when passed column name and asc as queries', async () => {
+        const res = await request(app)
+            .get('/api/articles?sort_by=article_id&order=asc')
+            .expect(200)
+        expect(res.body.articles).toBeSortedBy('article_id');
+    });
+
+    test('200: returns an array filtered by topic when passed a topic query (with default descending order by created_at', async () => {
+        const res = await request(app)
+            .get('/api/articles?topic=mitch')
+            .expect(200)
+        expect(res.body.articles.length).toBe(11);
+        expect(res.body.articles).toBeSortedBy('created_at', { descending: true });
+    });
+    
+});
+
+
     
 
 

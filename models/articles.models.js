@@ -1,5 +1,6 @@
 const db = require("../db/connection")
 const checkExists = require('../db/utils/data-validation');
+const format = require("pg-format");
 
 
 exports.fetchArticle = async (article_id) => {
@@ -38,4 +39,33 @@ exports.fetchArticleComments = async (article_id) => {
     await checkExists('articles', 'article_id', article_id);
   }
   return result.rows;
+}
+
+exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) => {
+  if (order === 'asc' || order === 'desc' && topic === undefined) {
+    const queryString = format(`
+  SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comment_count
+  FROM articles
+  LEFT OUTER JOIN comments ON comments.article_id = articles.article_id
+  GROUP BY articles.article_id
+  ORDER BY %I ${order};`, sort_by);
+    
+    const result = await db.query(queryString);
+    return result.rows;
+  } else {
+    if ((order === 'asc' || order === 'desc' && topic !== undefined)) {
+      const queryStringWithTopic = format(
+        `
+  SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comment_count
+  FROM articles
+  LEFT OUTER JOIN comments ON comments.article_id = articles.article_id
+  WHERE articles.topic = $1
+  GROUP BY articles.article_id
+  ORDER BY %I ${order};`,
+        sort_by
+      );
+      const result = await db.query(queryStringWithTopic, [topic]);
+      return result.rows;
+    }
+  }
 }
