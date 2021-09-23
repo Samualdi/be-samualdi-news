@@ -259,6 +259,60 @@ describe('GET /api/articles', () => {
     
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+    test('201: adds a comment to the relevant article identified by a passed in article_id. Returns the posted comment', async () => {
+        const res = await request(app)
+            .post('/api/articles/1/comments')
+            .send({
+                username: 'icellusedkars', body: 'Im adding a comment to see if it works'})
+            .expect(201)
+        expect(Object.keys(res.body.newComment[0])).toEqual([
+          "comment_id",
+          "author",
+          "article_id",
+          "votes",
+          "created_at",
+          "body",
+        ]);
+        expect(res.body.newComment[0].article_id).toBe(1);
+    });
+
+    test('405: returns method not allowed error when passed a comment with no body', async () => {
+        const res = await request(app)
+            .post('/api/articles/1/comments')
+            .send({ username: 'icellusedkars'})
+            .expect(405)
+        expect(res.body.msg).toBe('Method not allowed');
+        
+    });
+
+    test('405: returns method not allowed error when passed a comment with no username', async () => {
+        const res = await request(app)
+            .post('/api/articles/1/comments')
+            .send({ body: 'This shouldnt post without a username' })
+            .expect(405)
+        expect(res.body.msg).toBe('Method not allowed');
+        
+    });
+
+    test('400: returns a bad request error when passed an invalid article_id ', async () => {
+        const res = await request(app)
+            .post('/api/articles/notanum/comments')
+            .send({username: 'icellusedkars', body: 'This wont work because of the dodgy id'})
+            .expect(400)
+        expect(res.body.msg).toBe('Bad request');
+        
+    });
+
+    test('400: returns a bad request error when passed a valid comment object to an article_id that doesnt exist', async () => {
+        const res = await request(app)
+            .post('/api/articles/254/comments')
+            .send({ username: 'icellusedkars', body: 'This wont work because of the dodgy id' })
+            .expect(400)
+        expect(res.body.msg).toBe('Bad request');
+    });
+});
+
 
     
 

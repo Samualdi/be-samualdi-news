@@ -41,7 +41,7 @@ exports.fetchArticleComments = async (article_id) => {
   return result.rows;
 }
 
-exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) => {
+exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) => { //NEED to add body;
   if (order !== 'asc' && order !== 'desc') {
     return Promise.reject({ status: 400, msg: 'Bad request' });
   }
@@ -72,3 +72,22 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) =>
     }
   }
 }
+
+exports.addCommentOnArticle = async (article_id, commentToPost) => {
+  if (!commentToPost.body || !commentToPost.username) {
+    return Promise.reject({ status: 405, msg: 'Method not allowed' });
+  } else {
+  
+    const result = await db.query(`
+  INSERT INTO comments
+  (author, body, article_id)
+  VALUES
+  ($1, $2, $3)
+  RETURNING*;`, [commentToPost.username, commentToPost.body, article_id]);
+    console.log(result.rows);
+    if (result.rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "Not found" });
+    } 
+      return result.rows;
+    }
+  }
