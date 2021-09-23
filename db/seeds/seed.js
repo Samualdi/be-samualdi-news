@@ -1,7 +1,7 @@
 const db = require('../connection');
 const data = require('../data/development-data/index');
 const pg = require('pg');
-const { formatTopicsData, formatUsersData, formatArticlesData, formatCommentsData, formatData } = require('../utils/data-manipulation');
+const { formatData } = require('../utils/data-manipulation');
 const format = require('pg-format');
 
 const seed = (data) => {
