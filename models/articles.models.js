@@ -42,7 +42,10 @@ exports.fetchArticleComments = async (article_id) => {
 }
 
 exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) => {
-  if (order === 'asc' || order === 'desc' && topic === undefined) {
+  if (order !== 'asc' && order !== 'desc') {
+    return Promise.reject({ status: 400, msg: 'Bad request' });
+  }
+  if(topic === undefined){
     const queryString = format(`
   SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comment_count
   FROM articles
@@ -53,7 +56,7 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) =>
     const result = await db.query(queryString);
     return result.rows;
   } else {
-    if ((order === 'asc' || order === 'desc' && topic !== undefined)) {
+    if (topic !== undefined) {
       const queryStringWithTopic = format(
         `
   SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comment_count

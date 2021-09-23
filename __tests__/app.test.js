@@ -225,6 +225,37 @@ describe('GET /api/articles', () => {
         expect(res.body.articles.length).toBe(11);
         expect(res.body.articles).toBeSortedBy('created_at', { descending: true });
     });
+
+    test('400: return bad request when passed an invalid sort_by value as a query', async () => {
+        const res = await request(app)
+            .get('/api/articles?sort_by=123')
+            .expect(400)
+        expect(res.body.msg).toBe('Bad request');
+        
+    });
+
+    test("400: return bad request when passed sort_by value as a query that does not exist", async () => {
+      const res = await request(app)
+        .get("/api/articles?sort_by=author_name")
+        .expect(400);
+      expect(res.body.msg).toBe("Bad request");
+    });
+
+    test('400: return a bad request error when passed an invalid sort query', async () => {
+        const res = await request(app)
+          .get("/api/articles?order=123")
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+
+    test('200: returns an empty array when passed a topic query that does not exist', async () => {
+        const res = await request(app)
+          .get("/api/articles?topic=author_name")
+            .expect(200);
+        expect(res.body.articles.length).toBe(0);
+
+    });
+
     
 });
 
