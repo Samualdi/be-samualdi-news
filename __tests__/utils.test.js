@@ -1,6 +1,11 @@
 const { formatData } = require('../db/utils/data-manipulation');
 const checkExists = require('../db/utils/data-validation');
-const request = require('supertest');
+const testData = require("../db/data/test-data/index");
+const seed = require('../db/seeds/seed');
+const db = require('../db/connection');
+
+beforeEach(() => seed(testData));
+afterAll(() => db.end());
 
 describe('formatData', () => {
   test('returns an empty array when passed an empty array', () => {
@@ -142,9 +147,23 @@ describe('formatData', () => {
       },
     ]);
   });
-  
-  });
 
+});
+  
+// describe('checkExists', () => {
+//   test('returns a rejected promise if passed an article_id that does not exist ', async () => {
+//     const tableName = 'articles';
+//     const columnName = 'article_id';
+//     const value = '250';
+//     const actual = await checkExists(tableName, columnName, value);
+//     const expected = { status: 404, msg: "Not found" };
+//     expect(actual).toEqual(expected);
+    
+  
+//   });
+
+// })
+//HOW TO TEST!
 
 
     
