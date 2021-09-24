@@ -5,8 +5,7 @@ exports.getEndPoints = async (req, res, next) => {
     try {
         const endPoints = await fetchEndPoints();
         res.status(200).send(endPoints);
-        
-    
+
     } catch (err) {
         next(err);
 }
