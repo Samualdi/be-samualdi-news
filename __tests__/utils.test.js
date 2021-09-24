@@ -150,20 +150,21 @@ describe('formatData', () => {
 
 });
   
-// describe('checkExists', () => {
-//   test('returns a rejected promise if passed an article_id that does not exist ', async () => {
-//     const tableName = 'articles';
-//     const columnName = 'article_id';
-//     const value = '250';
-//     const actual = await checkExists(tableName, columnName, value);
-//     const expected = { status: 404, msg: "Not found" };
-//     expect(actual).toEqual(expected);
+describe('checkExists', () => {
+  test("returns a rejected promise if passed an article_id that does not exist ", async () => {
+    const tableName = "articles";
+    const columnName = "article_id";
+    const value = 250;
+
+    //NEED TO WORK OUT APPROPRIATE TEST
+
+    // checkExists(tableName, columnName, value).then(() => {
+      
+    // })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   })
+    // await expect(checkExists(tableName, columnName, value)).rejects();
     
-  
-//   });
-
-// })
-//HOW TO TEST!
-
-
-    
+  })
+})
