@@ -11,15 +11,89 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": ["topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
+          "author": "butter_bridge",
+          "title": "Living in the shadow of a great man",
+          "article_id": 1,
+          "topic": "mitch",
           "body": "Text from the article..",
-          "created_at": 1527695953341
+          "created_at": 1594329060000,
+          "votes": 100,
+          "comment_count": 13
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "Returns the article with the matching article_id",
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "author": "butter_bridge",
+          "title": "Living in the shadow of a great man",
+          "article_id": 1,
+          "topic": "mitch",
+          "body": "Text from the article..",
+          "created_at": 1594329060000,
+          "votes": 100,
+          "comment_count": 13
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "Increments the number of votes on the article with the given article_id",
+    "queries": [],
+    "exampleBody": { "inc_votes": 10 },
+    "exampleResponse": {
+      "updatedArticle": [
+        {
+          "author": "butter_bridge",
+          "title": "Living in the shadow of a great man",
+          "article_id": 1,
+          "topic": "mitch",
+          "body": "Text from the article..",
+          "created_at": 1594329060000,
+          "votes": 100
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "Serves an arry of comments associated with the article with the supplied article_id",
+    "queries": [],
+    "exampleResponse": {
+      "articleComments": [
+        {
+          "author": "icellusedkars",
+          "comment_id": 1,
+          "body": "Text from the comment..",
+          "created_at": 1594329060000,
+          "votes": 50
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "Posts a comment related to the article with the given_id and serves the new comment",
+    "queries": [],
+    "exampleBody": {
+      "username": "icellusedkars",
+      "body": "Im adding a comment to see if it works"
+    },
+    "exampleResponse": {
+      "newComment": [
+        {
+          "author": "icellusedkars",
+          "comment_id": 1,
+          "body": "Text from the comment..",
+          "created_at": 1594329060000,
+          "votes": 50,
+          "article_id": 1
         }
       ]
     }
