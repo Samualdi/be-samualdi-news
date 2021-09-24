@@ -313,6 +313,45 @@ describe("POST /api/articles/:article_id/comments", () => {
     });
 });
 
+describe('GET/api', () => {
+    test('200: returns all the availible endpoints in the API', async () => {
+        const res = await request(app)
+            .get('/api')
+            .expect(200)
+        expect(res.body).toEqual({
+          "GET /api": {
+            description:
+              "serves up a json representation of all the available endpoints of the api",
+          },
+          "GET /api/topics": {
+            description: "serves an array of all topics",
+            queries: [],
+            exampleResponse: {
+              topics: [{ slug: "football", description: "Footie!" }],
+            },
+          },
+          "GET /api/articles": {
+            description: "serves an array of all topics",
+            queries: ["author", "topic", "sort_by", "order"],
+            exampleResponse: {
+              articles: [
+                {
+                  title: "Seafood substitutions are increasing",
+                  topic: "cooking",
+                  author: "weegembump",
+                  body: "Text from the article..",
+                  created_at: 1527695953341,
+                },
+              ],
+            },
+          },
+        });
+        });
+        
+    });
+    
+
+
 
     
 
