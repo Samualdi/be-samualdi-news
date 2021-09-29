@@ -3,11 +3,12 @@ const { getArticle, updateArticleVotes, getArticleComments, getArticles, postCom
 
 
 const articlesRouter = express.Router();
-
-articlesRouter.get('/:article_id', getArticle);
-articlesRouter.patch('/:article_id', updateArticleVotes);
-articlesRouter.get('/:article_id/comments', getArticleComments);
-articlesRouter.get('/', getArticles);
-articlesRouter.post('/:article_id/comments', postCommentOnArticle)
-
+articlesRouter.get("/", getArticles);
+articlesRouter.route("/:article_id")
+    .get(getArticle)
+    .patch(updateArticleVotes);
+articlesRouter.route("/:article_id/comments")
+    .get(getArticleComments)
+    .post(postCommentOnArticle);
+     
 module.exports = articlesRouter;
