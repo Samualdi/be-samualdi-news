@@ -1,10 +1,10 @@
 
 formatData = (data) => {
     if (data.length === 0) return []
-    const fromattedData = data.map(obj => {
+    const formattedData = data.map(obj => {
         return Object.values(obj);
     })
-    return fromattedData;
+    return formattedData;
     }
 
 module.exports = {formatData};
