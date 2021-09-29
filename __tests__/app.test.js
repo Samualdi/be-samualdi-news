@@ -3,7 +3,6 @@ const testData = require('../db/data/test-data/index.js');
 const seed = require('../db/seeds/seed.js');
 const request = require('supertest');
 const app = require('../app');
-const { forEach } = require('../db/data/test-data/articles.js');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -248,12 +247,11 @@ describe('GET /api/articles', () => {
         expect(res.body.msg).toBe("Bad request");
     });
 
-    test('200: returns an empty array when passed a topic query that does not exist', async () => {
+    test('404: returns a not found error when passed a topic query that does not exist', async () => {
         const res = await request(app)
-          .get("/api/articles?topic=author_name")
-            .expect(200);
-        expect(res.body.articles.length).toBe(0);
-
+            .get("/api/articles?topic=banana")
+            .expect(404)
+        expect(res.body.msg).toBe("Not found");
     });
 
     
@@ -304,13 +302,25 @@ describe("POST /api/articles/:article_id/comments", () => {
         
     });
 
-    test('400: returns a bad request error when passed a valid comment object to an article_id that doesnt exist', async () => {
+    test('404: returns a not found error when passed a valid comment object to an article_id that doesnt exist', async () => {
         const res = await request(app)
             .post('/api/articles/254/comments')
             .send({ username: 'icellusedkars', body: 'This wont work because of the dodgy id' })
-            .expect(400)
-        expect(res.body.msg).toBe('Bad request');
+            .expect(404)
+        expect(res.body.msg).toBe('Not found');
     });
+
+    test('404: returns a not fouind error when passed a valid comment with a username that doesnt exist ', async () => {
+        const res = await request(app)
+          .post("/api/articles/3/comments")
+          .send({
+            username: "samualdi",
+            body: "This wont work because of the dodgy id",
+          })
+          .expect(404);
+        expect(res.body.msg).toBe("Not found");
+    });
+
 });
 
 describe('GET/api', () => {
