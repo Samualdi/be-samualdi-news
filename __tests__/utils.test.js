@@ -4,8 +4,7 @@ const testData = require("../db/data/test-data/index");
 const seed = require('../db/seeds/seed');
 const db = require('../db/connection');
 
-beforeEach(() => seed(testData));
-afterAll(() => db.end());
+
 
 describe('formatData', () => {
   test('returns an empty array when passed an empty array', () => {
@@ -150,21 +149,3 @@ describe('formatData', () => {
 
 });
   
-describe('checkExists', () => {
-  test("returns a rejected promise if passed an article_id that does not exist ", async () => {
-    const tableName = "articles";
-    const columnName = "article_id";
-    const value = 250;
-
-    //NEED TO WORK OUT APPROPRIATE TEST
-
-    // checkExists(tableName, columnName, value).then(() => {
-      
-    // })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   })
-    // await expect(checkExists(tableName, columnName, value)).rejects();
-    
-  })
-})
