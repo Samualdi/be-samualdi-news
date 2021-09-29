@@ -45,6 +45,7 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) =>
   if (order !== 'asc' && order !== 'desc') {
     return Promise.reject({ status: 400, msg: 'Bad request' });
   }
+
   if(topic === undefined){
     const queryString = format(`
   SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comment_count
@@ -57,6 +58,7 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) =>
     return result.rows;
   } else {
     if (topic !== undefined) {
+      await checkExists('topics', 'slug', topic);
       const queryStringWithTopic = format(
         `
   SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id)::INT AS comment_count
@@ -68,16 +70,18 @@ exports.fetchArticles = async (sort_by = 'created_at', order = 'desc', topic) =>
         sort_by
       );
       const result = await db.query(queryStringWithTopic, [topic]);
+  
       return result.rows;
     }
   }
 }
 
 exports.addCommentOnArticle = async (article_id, commentToPost) => {
+  await checkExists('articles', 'article_id', article_id);
   if (!commentToPost.body || !commentToPost.username) {
     return Promise.reject({ status: 405, msg: 'Method not allowed' });
   } else {
-  
+     await checkExists("users", "username", commentToPost.username);
     const result = await db.query(`
   INSERT INTO comments
   (author, body, article_id)

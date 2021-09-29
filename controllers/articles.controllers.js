@@ -42,6 +42,7 @@ exports.getArticles = async (req, res, next) => {
     try {
         const { sort_by, order, topic } = req.query;
         const articles = await fetchArticles(sort_by, order, topic);
+        
         res.status(200).send({ articles: articles });
         
     } catch (err) {
@@ -53,7 +54,7 @@ exports.postCommentOnArticle = async (req, res, next) => {
     try {
         const { article_id } = req.params;
         const commentToPost = req.body;
-        const newComment = await addCommentOnArticle(article_id, commentToPost);
+        const newComment = await addCommentOnArticle(article_id, commentToPost, username);
         res.status(201).send({ newComment: newComment });
         console.log(newComment);
 
