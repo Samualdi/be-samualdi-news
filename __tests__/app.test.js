@@ -333,6 +333,31 @@ describe('GET/api', () => {
         });
         
     });
+
+describe('DELETE /api/comments/:comment_id', () => {
+    test('204: returns a no content success response and deletes a comment from the database while retunring no content.', async () => {
+        const res = await request(app)
+            .delete('/api/comments/3')
+            .expect(204);
+        expect(res.body).toEqual({});
+    });
+
+    test('404: returns a not found request when passed a comment_id that does not exist', async () => {
+        const res = await request(app)
+        .delete('/api/comments/999')
+            .expect(404);
+        expect(res.body.msg).toEqual('Not found');
+    });
+
+    test('400: returns bad request when passed an invalid comment_id ', async () => {
+        const res = await request(app)
+            .delete("/api/comments/notanum")
+            .expect(400);
+        expect(res.body.msg).toEqual("Bad request");
+        
+    });
+    });
+
     
 
 
