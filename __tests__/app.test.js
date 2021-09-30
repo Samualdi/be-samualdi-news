@@ -107,7 +107,7 @@ describe('PATCH/api/articles/:article_id', () => {
     
     });
 
-    test("400: returns an error when passed an empty object as part of the pathc request", async () => {
+    test("400: returns an error when passed an empty object as part of the patch request", async () => {
       const res = await request(app)
         .patch("/api/articles/1")
         .send({})
@@ -393,10 +393,76 @@ describe('GET /api/users/:username', () => {
     
 })
 
+describe('PATCH /api/comments/:comment_id', () => {
+    test('200: Increments the vote property by the specified amount and returns the updated comment when passed a positive increment value', async () => {
+        const res = await request(app)
+            .patch('/api/comments/1')
+            .send({ inc_votes: 10 })
+            .expect(200)
+        expect(res.body.updatedComment.votes).toBe(26);
+        expect(res.body.updatedComment.comment_id).toBe(1);
+        const keysFromObject = Object.keys(res.body.updatedComment);
+        expect(keysFromObject).toEqual(['comment_id', 'author', 'article_id', 'votes', 'created_at', 'body']);
+    });
+
+    test("200: Increments the vote property by the specified amount and returns the updated comment when passed a negative increment value", async () => {
+        const res = await request(app)
+            .patch("/api/comments/1")
+            .send({ inc_votes: -10 })
+            .expect(200);
+        expect(res.body.updatedComment.votes).toBe(6);
+        expect(res.body.updatedComment.comment_id).toBe(1);
+        const keysFromObject = Object.keys(res.body.updatedComment);
+        expect(keysFromObject).toEqual([
+            "comment_id",
+            "author",
+            "article_id",
+            "votes",
+            "created_at",
+            "body",
+        ]);
+    })
+    
+    test('404: returns a not found error when passed a valid inc_votes to a comment_id that does not exist', async () => {
+        const res = await request(app)
+          .patch("/api/comments/999")
+          .send({ inc_votes: 10 })
+          .expect(404);
+        expect(res.body.msg).toBe('Not found');
+        
+    });
+
+    test('400: returns a bad request error when passed a valid inc_vote and an invalid comment_id', async () => {
+        const res = await request(app)
+          .patch("/api/comments/notanum")
+          .send({ inc_votes: 10 })
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+
+    test('400: returns a bad request error when passed an empty object as the body of the patch request and a valid comment_id', async () => {
+        const res = await request(app)
+          .patch("/api/comments/1")
+          .send({})
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+
+    test('400: returns a bad request error when passed an invalid inc_votes value in the body to a valid_id', async () => {
+        const res = await request(app)
+          .patch("/api/comments/1")
+          .send({ inc_votes: 'notanum' })
+          .expect(400);
+        expect(res.body.msg).toBe("Bad request");
+    });
+});
+
     
 
 
-
+// empty object
+//invlaid value for inc_vote
+//incvlaid_id
     
 
 

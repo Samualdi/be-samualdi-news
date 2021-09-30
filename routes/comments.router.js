@@ -1,5 +1,5 @@
 const express = require('express');
-const { removeComment } = require('../controllers/comments.controllers');
+const { removeComment, updateCommentVotes } = require('../controllers/comments.controllers');
 
 
 
@@ -7,6 +7,7 @@ const { removeComment } = require('../controllers/comments.controllers');
 const commentsRouter = express.Router();
 
 commentsRouter.delete("/:comment_id", removeComment);
+commentsRouter.patch('/:comment_id', updateCommentVotes);
 
 
 
