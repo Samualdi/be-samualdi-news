@@ -11,7 +11,6 @@ exports.handle400Errors = (err, req, res, next) => {
     } else {
       next(err);
     }
-
 }
 
 exports.handleCustomErrors = (err, req, res, next) => {

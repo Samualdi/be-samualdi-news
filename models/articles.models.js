@@ -88,7 +88,6 @@ exports.addCommentOnArticle = async (article_id, commentToPost) => {
   VALUES
   ($1, $2, $3)
   RETURNING*;`, [commentToPost.username, commentToPost.body, article_id]);
-    console.log(result.rows);
     if (result.rows.length === 0) {
       return Promise.reject({ status: 404, msg: "Not found" });
     } 
