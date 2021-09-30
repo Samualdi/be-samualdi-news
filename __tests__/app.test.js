@@ -356,7 +356,42 @@ describe('DELETE /api/comments/:comment_id', () => {
         expect(res.body.msg).toEqual("Bad request");
         
     });
+});
+    
+describe('GET /api/users', () => {
+    test('200: returns an array of users with relevant properties ordered by username', async () => {
+        const res = await request(app)
+            .get('/api/users')
+            .expect(200)
+        expect(res.body.users.length).toBe(4);
+        expect(Object.keys(res.body.users[0])).toEqual(['username', 'avatar_url', 'name']);
+        expect(res.body.users).toBeSortedBy("username");
+        
     });
+    
+});
+
+describe('GET /api/users/:username', () => {
+    test('200: returns a single user with the given _id with the relevant properties displayed', async () => {
+        const res = await request(app)
+            .get("/api/users/rogersop")
+            .expect(200)
+        expect(res.body.user).toEqual({
+            username: 'rogersop',
+            name: 'paul',
+            avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4'
+        });
+    
+    });
+
+    test('404: returns a not found error message when passed a username that does not exist', async () => {
+        const res = await request(app)
+            .get("/api/users/idontexist")
+            .expect(404);
+        expect(res.body.msg).toBe('Not found');
+    });
+    
+})
 
     
 
