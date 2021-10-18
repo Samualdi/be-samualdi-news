@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/northcoders/be-nc-news#readme",
   "dependencies": {
+    "cors": "^2.8.5",
     "dot": "^1.1.3",
     "dotenv": "^10.0.0",
     "env": "^0.0.2",
@@ -35,6 +36,8 @@
     "supertest": "^6.1.6"
   },
   "jest": {
-  "setupFilesAfterEnv": ["jest-sorted"]
-}
+    "setupFilesAfterEnv": [
+      "jest-sorted"
+    ]
+  }
 }
